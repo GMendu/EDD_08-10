@@ -108,10 +108,10 @@ namespace EDD_Avaliacao
             return int.Parse(Console.ReadLine());
         }
 
-        static clientes CadastrarCliente(int quant)
+        static clientes CadastrarCliente(string cpf,int quant)
         {
             clientes entrada = new clientes();
-            Console.WriteLine($"Cadastro da pessoa nº{quant}");
+            Console.WriteLine($"Cadastro da pessoa nº{quant} - {cpf}");
             Console.WriteLine("Nome: ");
             entrada.nome = Console.ReadLine();
             Console.WriteLine("DDD: ");
@@ -120,8 +120,7 @@ namespace EDD_Avaliacao
             entrada.telefone = Console.ReadLine();
             Console.WriteLine("Email: ");
             entrada.email = Console.ReadLine();
-            Console.WriteLine("CPF: ");
-            entrada.cpf = Console.ReadLine();
+            entrada.cpf = cpf;
             Console.WriteLine("Endereco: ");
             entrada.endereco = Console.ReadLine();
             Console.WriteLine("Observação: ");
@@ -130,12 +129,11 @@ namespace EDD_Avaliacao
             return entrada;
         }
 
-        static produtos CadastrarProduto(int quant) //nome; quant; valorUnit; observ;
+        static produtos CadastrarProduto(string nome,int quant) //nome; quant; valorUnit; observ;
         {
             produtos entrada = new produtos();
-            Console.WriteLine($"Cadastro de produto nº{quant}");
-            Console.WriteLine("Nome: ");
-            entrada.nome = Console.ReadLine();
+            Console.WriteLine($"Cadastro de produto nº{quant} - {nome}");
+            entrada.nome = nome;
             Console.WriteLine("Quantidade: ");
             entrada.quant = Console.ReadLine();
             Console.WriteLine("valor unitário: ");
@@ -184,7 +182,26 @@ namespace EDD_Avaliacao
                                 {
                                     case 1:
                                         {
-                                            ListClientes.Add(CadastrarCliente(ListClientes.Count + 1));
+                                            bool check = false;
+                                            Console.WriteLine("Qual cpf do cliente que deseja cadastrar?");
+                                            string cadastrarc = Console.ReadLine();
+                                            foreach (clientes c in ListClientes)
+                                            {
+                                                if (cadastrarc == c.cpf)
+                                                {
+                                                    check = true;
+                                                }
+                                            }
+                                            if (check)
+                                            {
+                                                Console.WriteLine("cpf já existente");
+                                            }
+                                            else
+                                            {
+
+                                                ListClientes.Add(CadastrarCliente(cadastrarc, ListClientes.Count + 1));
+                                            }
+                                            
                                         }
                                         break;
                                     case 2:
@@ -224,9 +241,24 @@ namespace EDD_Avaliacao
                                 {
                                     case 1:
                                         {
-                                            ListProdutos.Add(CadastrarProduto(ListProdutos.Count + 1));
+                                            bool check = false;
+                                            Console.WriteLine("Qual produto deseja cadastrar?");
+                                            string cadastrarp = Console.ReadLine();
+                                            foreach (produtos p in ListProdutos)
+                                            {
+                                                if (cadastrarp == p.nome)
+                                                    check = true;
+                                            }
+                                            if (check)
+                                            {
+                                                Console.WriteLine("produto ja existente");
+                                            }
+                                            else
+                                            {
+                                                ListProdutos.Add(CadastrarProduto(cadastrarp, ListProdutos.Count + 1));
+                                            }
+                                            break;
                                         }
-                                        break;
                                     case 2:
                                         {
                                             Console.WriteLine($"Um total de {ListProdutos.Count} produtos foram armazenadas");
@@ -264,7 +296,47 @@ namespace EDD_Avaliacao
                                 {
                                     case 1:
                                         {
-                                            ListVendas.Add(CadastrarVenda(ListVendas.Count + 1));
+                                            vendas entrada = new vendas();
+                                            Console.WriteLine("Qual produto será vendido?\n");
+                                            foreach (produtos d in ListProdutos)
+                                            {
+                                                Console.Write($"{d.nome},");
+                                            }
+                                            string procurarp = Console.ReadLine();
+                                            foreach (produtos p in ListProdutos)
+                                            {
+                                                if (p.nome == procurarp)
+                                                {
+                                                    entrada.produto = p.nome;
+                                                    Console.WriteLine("Quem é o comprador?");
+                                                    foreach (clientes c in ListClientes)
+                                                    {
+                                                        Console.WriteLine($"{c.nome},");
+                                                    }
+                                                    string procurarc = Console.ReadLine();
+                                                    foreach (clientes c in ListClientes)
+                                                    {
+                                                        if (c.nome == procurarc)
+                                                        {
+                                                            entrada.comprador = c.nome;
+                                                            Console.WriteLine($"qual a quantidade?(máx:{p.quant})");
+                                                            int quantidade = int.Parse(Console.ReadLine());
+                                                            if(quantidade <= int.Parse(p.quant))
+                                                            {
+                                                                entrada.quant = quantidade.ToString();
+                                                                entrada.valorUnit = p.valorUnit;
+                                                                Console.WriteLine("Alguma observação?");
+                                                                entrada.observ = Console.ReadLine();
+                                                                ListVendas.Add(entrada);
+                                                            }
+                                                            else
+                                                            {
+                                                                Console.WriteLine($" O limite de {p.quant} foi atingido");
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         }
                                         break;
                                     case 2:

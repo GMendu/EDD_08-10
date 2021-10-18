@@ -296,31 +296,37 @@ namespace EDD_Avaliacao
                                 {
                                     case 1:
                                         {
+                                            string procurarc, procurarp;
+                                            int quantidade = 0;
+                                            bool test = false;
+                                            produtos excluir = new produtos();
                                             vendas entrada = new vendas();
-                                            Console.WriteLine("Qual produto será vendido?\n");
+                                            Console.WriteLine("Produtos registrados:");
                                             foreach (produtos d in ListProdutos)
                                             {
                                                 Console.Write($"{d.nome},");
                                             }
-                                            string procurarp = Console.ReadLine();
+                                            Console.WriteLine(".\nQual produto será vendido?\n");
+                                            procurarp = Console.ReadLine();
                                             foreach (produtos p in ListProdutos)
                                             {
                                                 if (p.nome == procurarp)
                                                 {
                                                     entrada.produto = p.nome;
-                                                    Console.WriteLine("Quem é o comprador?");
+                                                    Console.WriteLine("Compradores registrados:");
                                                     foreach (clientes c in ListClientes)
                                                     {
-                                                        Console.WriteLine($"{c.nome},");
+                                                        Console.Write($"{c.nome},");
                                                     }
-                                                    string procurarc = Console.ReadLine();
+                                                    Console.Write(".\nQuem é o comprador?\n");
+                                                    procurarc = Console.ReadLine();
                                                     foreach (clientes c in ListClientes)
                                                     {
                                                         if (c.nome == procurarc)
                                                         {
                                                             entrada.comprador = c.nome;
                                                             Console.WriteLine($"qual a quantidade?(máx:{p.quant})");
-                                                            int quantidade = int.Parse(Console.ReadLine());
+                                                            quantidade = int.Parse(Console.ReadLine());
                                                             if(quantidade <= int.Parse(p.quant))
                                                             {
                                                                 entrada.quant = quantidade.ToString();
@@ -328,6 +334,8 @@ namespace EDD_Avaliacao
                                                                 Console.WriteLine("Alguma observação?");
                                                                 entrada.observ = Console.ReadLine();
                                                                 ListVendas.Add(entrada);
+                                                                excluir = p;
+                                                                test = true;
                                                             }
                                                             else
                                                             {
@@ -336,6 +344,16 @@ namespace EDD_Avaliacao
                                                         }
                                                     }
                                                 }
+                                            }
+                                            if (test)
+                                            {
+                                                produtos editar = new produtos();
+                                                editar.nome = excluir.nome;
+                                                editar.quant = (int.Parse(excluir.quant) - quantidade).ToString();
+                                                editar.valorUnit = excluir.valorUnit;
+                                                editar.observ = excluir.observ;
+                                                ListProdutos.Remove(excluir);
+                                                ListProdutos.Add(editar);
                                             }
                                         }
                                         break;
